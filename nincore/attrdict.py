@@ -55,8 +55,10 @@ class AttrDict(OrderedDict):
         return value
 
     def to_json(self, json_dir: str, indent: int = 4) -> None:
-        assert isinstance(json_dir, str)
-        assert isinstance(indent, int)
+        assert isinstance(
+            json_dir, str
+        ), f"Should be `str`, your type `{type(json_dir)}`."
+        assert isinstance(indent, int), f"Should be `int`, your type `{type(indent)}`."
         json_dir = os.path.expanduser(json_dir)
         self._cvt_array_list()
         self._not_exist_makedirs(json_dir)
@@ -64,7 +66,9 @@ class AttrDict(OrderedDict):
             json.dump(self, f, indent=indent, default=lambda _: None)
 
     def to_yaml(self, yaml_dir: str) -> None:
-        assert isinstance(yaml_dir, str)
+        assert isinstance(
+            yaml_dir, str
+        ), f"Should be `str`, your type `{type(yaml_dir)}`."
         yaml_dir = os.path.expanduser(yaml_dir)
         self._cvt_array_list()
         self._not_exist_makedirs(yaml_dir)
@@ -72,7 +76,9 @@ class AttrDict(OrderedDict):
             yaml.dump(self, f)
 
     def to_toml(self, toml_dir: str) -> None:
-        assert isinstance(toml_dir, str)
+        assert isinstance(
+            toml_dir, str
+        ), f"Should be `str`, your type `{type(toml_dir)}`."
         toml_dir = os.path.expanduser(toml_dir)
         self._cvt_array_list()
         self._not_exist_makedirs(toml_dir)
