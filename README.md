@@ -1,2 +1,3 @@
 # nincore
-Core utilities of nin's packages.
+
+Core utilities of `nin`'s packages.
