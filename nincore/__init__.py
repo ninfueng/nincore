@@ -1,5 +1,6 @@
 from .core import *
 from .attrdict import *
+from .ntuple import *
 from . import io
 from . import time
 from . import utils

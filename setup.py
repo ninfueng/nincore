@@ -12,7 +12,7 @@ setup(
     version="0.0.1",
     author="Ninnart Fuengfusin",
     author_email="ninnart.fuengfusin@yahoo.com",
-    description="Core utilities of nin's packages.",
+    description="Core utilities nin's packages.",
     license="Apache License 2.0",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
