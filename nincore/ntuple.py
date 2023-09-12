@@ -1,15 +1,15 @@
-from typing import Any, Tuple, Callable
-
-from itertools import repeat
 import collections.abc
+from itertools import repeat
+from typing import Any, Callable, Tuple
 
 __all__ = [
-    'to_ntuple',
-    'to_1tuple',
-    'to_2tuple',
-    'to_3tuple',
-    'to_4tuple',
+    "to_ntuple",
+    "to_1tuple",
+    "to_2tuple",
+    "to_3tuple",
+    "to_4tuple",
 ]
+
 
 # https://github.com/huggingface/pytorch-image-models/blob/main/timm/layers/helpers.py
 def _ntuple(n: Any) -> Callable[..., Tuple[Any, ...]]:
@@ -17,6 +17,7 @@ def _ntuple(n: Any) -> Callable[..., Tuple[Any, ...]]:
         if isinstance(x, collections.abc.Iterable) and not isinstance(x, str):
             return tuple(x)
         return tuple(repeat(x, n))
+
     return parse
 
 

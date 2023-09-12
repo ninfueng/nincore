@@ -3,12 +3,19 @@ import logging
 import os
 import shutil
 import sys
+import warnings
 from pathlib import Path
 from typing import Sequence, Union
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["set_logger", "backup_scripts", "apply_rich", "AvgMeter"]
+__all__ = ["filter_warn", "set_logger", "backup_scripts", "apply_rich", "AvgMeter"]
+
+
+# https://docs.python.org/3/library/warnings.html
+def filter_warn() -> None:
+    if not sys.warnoptions:
+        warnings.simplefilter("ignore")
 
 
 def apply_rich() -> None:
@@ -20,6 +27,44 @@ def apply_rich() -> None:
 
     except ImportError:
         pass
+
+
+def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:
+    """Copy all files with `filetype` to the dest location."""
+    os.makedirs(dest, exist_ok=True)
+    scripts = []
+    if isinstance(filetype, str):
+        scripts += glob.glob(os.path.join(os.curdir, f"*{filetype}"))
+    elif isinstance(filetype, Sequence):
+        # This `Sequence` can be used for the tuple and list.
+        for f in filetype:
+            scripts += glob.glob(os.path.join(os.curdir, f"*{f}"))
+    else:
+        raise NotImplementedError(f"Not support filetype: {filetype}.")
+
+    for s in scripts:
+        file_name = os.path.basename(s)
+        shutil.copy2(os.path.join(s), os.path.join(dest, file_name))
+
+
+# https://github.com/huggingface/pytorch-image-models/blob/main/timm/utils/metrics.py
+class AvgMeter:
+    """Computes and stores the average and current value"""
+
+    def __init__(self) -> None:
+        self.reset()
+
+    def reset(self) -> None:
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val: int, n: int = 1) -> None:
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
 
 
 def set_logger(
@@ -93,41 +138,3 @@ def set_logger(
                 logging.CRITICAL,
                 f"\041[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m",
             )
-
-
-def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:
-    """Copy all files with `filetype` to the dest location."""
-    os.makedirs(dest, exist_ok=True)
-    scripts = []
-    if isinstance(filetype, str):
-        scripts += glob.glob(os.path.join(os.curdir, f"*{filetype}"))
-    elif isinstance(filetype, Sequence):
-        # This `Sequence` can be used for the tuple and list.
-        for f in filetype:
-            scripts += glob.glob(os.path.join(os.curdir, f"*{f}"))
-    else:
-        raise NotImplementedError(f"Not support filetype: {filetype}.")
-
-    for s in scripts:
-        file_name = os.path.basename(s)
-        shutil.copy2(os.path.join(s), os.path.join(dest, file_name))
-
-
-# https://github.com/huggingface/pytorch-image-models/blob/main/timm/utils/metrics.py
-class AvgMeter:
-    """Computes and stores the average and current value"""
-
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val: int, n: int = 1) -> None:
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
