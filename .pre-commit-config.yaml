@@ -1,10 +1,9 @@
----
 repos:
   - repo: https://github.com/psf/black
     rev: 23.9.1
     hooks:
-      - id: black
-        args: [--exclude ./exps]
+      - id: black-jupyter
+        args: ['--line-length', '120', '--exclude', './exps']
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
@@ -25,15 +24,33 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
-        args: [--skip __init__.py]
+        # https://github.com/PyCQA/isort/issues/1518
+        args:
+          [
+                '--skip',
+                '__init__.py',
+                '--profile',
+                'black',
+                '--verbose',
+                '--filter-files'
+          ]
 
-  # https://github.com/pre-commit/pre-commit/issues/761#issuecomment-394167542
-  -   repo: local
-      hooks:
-      -   id: pytest
-          name: pytest
-          entry: bash -c "pytest ./tests"
-          language: system
-          type: [python]
-          pass_filenames: false
-          always_run: true
+  - repo: local
+    hooks:
+    - id: pytest
+      name: pytest
+      entry: bash -c 'pytest ./tests'
+      language: system
+      type: [python]
+      pass_filenames: false
+      always_run: true
+
+  - repo: local
+    hooks:
+    - id: clean
+      name: clean
+      entry: bash -c 'make clean'
+      language: system
+      type: [make]
+      pass_filenames: false
+      always_run: true

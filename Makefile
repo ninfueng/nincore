@@ -11,8 +11,14 @@ clean:
 
 .PHONY: fmt
 fmt:
-	isort . --skip __init__.py
-	black .
+	# https://github.com/PyCQA/isort/issues/1632
+	isort . \
+		--skip __init__.py \
+		--profile black \
+		--verbose
+	black . \
+		--line-length 120 \
+		--exclude ./exps
 
 .PHONY: pip
 pip:
