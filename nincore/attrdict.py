@@ -3,9 +3,6 @@ import os
 from collections import OrderedDict
 from typing import Any
 
-import numpy as np
-import torch
-
 try:
     import tomli_w
 except ImportError:
@@ -16,7 +13,26 @@ try:
 except ImportError:
     pass
 
+enable_cvt_np = False
+enable_cvt_torch = False
+try:
+    import numpy as np
+
+    enable_cvt_np = True
+except ImportError:
+    pass
+
+try:
+    import torch
+
+    enable_cvt_torch = True
+except ImportError:
+    pass
+
 __all__ = ["AttrDict"]
+
+
+# TODO: make __repr__ better
 
 
 class AttrDict(OrderedDict):
@@ -51,38 +67,34 @@ class AttrDict(OrderedDict):
                         self[key][idx] = AttrDict(self[key][idx])
 
     def __missing__(self, key: str) -> None:
-        self[key] = value = self.factory_default
-        return value
+        self[key] = self.factory_default
+        return self.factory_default
 
     def to_json(self, json_dir: str, indent: int = 4) -> None:
-        assert isinstance(
-            json_dir, str
-        ), f"Should be `str`, your type `{type(json_dir)}`."
+        assert isinstance(json_dir, str), f"Should be `str`, your type `{type(json_dir)}`."
         assert isinstance(indent, int), f"Should be `int`, your type `{type(indent)}`."
         json_dir = os.path.expanduser(json_dir)
+
         self._cvt_array_list()
         self._not_exist_makedirs(json_dir)
         with open(json_dir, "w") as f:
             json.dump(self, f, indent=indent, default=lambda _: None)
 
     def to_yaml(self, yaml_dir: str) -> None:
-        assert isinstance(
-            yaml_dir, str
-        ), f"Should be `str`, your type `{type(yaml_dir)}`."
+        assert isinstance(yaml_dir, str), f"Should be `str`, your type `{type(yaml_dir)}`."
         yaml_dir = os.path.expanduser(yaml_dir)
+
         self._cvt_array_list()
         self._not_exist_makedirs(yaml_dir)
         with open(yaml_dir, "w") as f:
             yaml.dump(self, f)
 
     def to_toml(self, toml_dir: str) -> None:
-        assert isinstance(
-            toml_dir, str
-        ), f"Should be `str`, your type `{type(toml_dir)}`."
+        assert isinstance(toml_dir, str), f"Should be `str`, your type `{type(toml_dir)}`."
         toml_dir = os.path.expanduser(toml_dir)
+
         self._cvt_array_list()
         self._not_exist_makedirs(toml_dir)
-
         with open(toml_dir, "wb") as f:
             tomli_w.dump(self, f)
 
@@ -91,10 +103,12 @@ class AttrDict(OrderedDict):
         os.makedirs(dirname, exist_ok=True)
 
     def _cvt_array_list(self) -> None:
-        """Try to converting `Tensor` and `np.ndarray` to `list`"""
+        """Converts `Tensor` and `np.ndarray` to `list` to save-able formats."""
         for key, value in self.items():
-            if isinstance(value, torch.Tensor):
-                tmp = value.detach().cpu().numpy()
-                self[key] = tmp.tolist()
-            elif isinstance(value, np.ndarray):
-                self[key] = value.tolist()
+            if enable_cvt_torch:
+                if isinstance(value, torch.Tensor):
+                    tmp = value.detach().cpu().numpy()
+                    self[key] = tmp.tolist()
+            if enable_cvt_np:
+                if isinstance(value, np.ndarray):
+                    self[key] = value.tolist()
