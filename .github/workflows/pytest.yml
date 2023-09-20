@@ -1,18 +1,18 @@
 ---
-name: pytest
+name: ct
 
 # Trigger this workflows on these events:
 on:
   push:
-    [master]
+    branches: [master]
   pull_request:
-    [master]
+    branches: [master]
   schedule:
     # Tests everyday at 0:00.
     - cron: '0 0 * * *'
 
 jobs:
-  test:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       - name: checkout this github repository
