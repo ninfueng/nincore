@@ -24,12 +24,12 @@ jobs:
           python-version: 3.11
           cache: pip
 
-      - names: pip install dependencies
+      - name: pip install dependencies
         run: |
           pip3 install PyYAML pytest
           python setup.py install
 
-      - names: run pytest
+      - name: run pytest
         run: pytest ./tests
 
       - uses: actions/upload-artifact@v3
