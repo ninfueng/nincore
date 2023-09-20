@@ -1,0 +1,40 @@
+---
+name: pytest
+
+# Trigger this workflows on these events:
+on:
+  push:
+    [master]
+  pull_request:
+    [master]
+  schedule:
+    # Tests everyday at 0:00.
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout this github repository
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: pip
+
+      - names: pip install dependencies
+        run: |
+          pip3 install PyYAML pytest
+          python setup.py install
+
+      - names: run pytest
+        run: pytest ./tests
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: pytest-report
+          path: pytest-report/
+          retention-days: 30
