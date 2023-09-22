@@ -27,7 +27,13 @@ fmt:
 	black . \
 		--line-length 120 \
 		--exclude ./exps \
-		--target-version py311
+		--target-version py311 \
+		--skip-string-normalization
+
+.PHONY: fmtstr
+fmtstr:
+	find -iname "*.py" | xargs sed -i s/\"/\'/g
+	find -iname "*.py" | xargs sed -i s/\'\'\'/\"\"\"/g
 
 .PHONY: pip
 pip:

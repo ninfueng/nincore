@@ -29,7 +29,7 @@ try:
 except ImportError:
     pass
 
-__all__ = ["AttrDict"]
+__all__ = ['AttrDict']
 
 
 # TODO: make __repr__ better
@@ -44,7 +44,7 @@ class AttrDict(OrderedDict):
     >>> d = AttrDict(a=3)
     >>> d.a
     3
-    >>> d2 = AttrDict(a=1, b={"a": 5, "b": 6})
+    >>> d2 = AttrDict(a=1, b={'a': 5, 'b': 6})
     >>> d2.b.a
     5
     """
@@ -71,31 +71,31 @@ class AttrDict(OrderedDict):
         return self.factory_default
 
     def to_json(self, json_dir: str, indent: int = 4) -> None:
-        assert isinstance(json_dir, str), f"Should be `str`, your type `{type(json_dir)}`."
-        assert isinstance(indent, int), f"Should be `int`, your type `{type(indent)}`."
+        assert isinstance(json_dir, str), f'Should be `str`, your type `{type(json_dir)}`.'
+        assert isinstance(indent, int), f'Should be `int`, your type `{type(indent)}`.'
         json_dir = os.path.expanduser(json_dir)
 
         self._cvt_array_list()
         self._not_exist_makedirs(json_dir)
-        with open(json_dir, "w") as f:
+        with open(json_dir, 'w') as f:
             json.dump(self, f, indent=indent, default=lambda _: None)
 
     def to_yaml(self, yaml_dir: str) -> None:
-        assert isinstance(yaml_dir, str), f"Should be `str`, your type `{type(yaml_dir)}`."
+        assert isinstance(yaml_dir, str), f'Should be `str`, your type `{type(yaml_dir)}`.'
         yaml_dir = os.path.expanduser(yaml_dir)
 
         self._cvt_array_list()
         self._not_exist_makedirs(yaml_dir)
-        with open(yaml_dir, "w") as f:
+        with open(yaml_dir, 'w') as f:
             yaml.dump(self, f)
 
     def to_toml(self, toml_dir: str) -> None:
-        assert isinstance(toml_dir, str), f"Should be `str`, your type `{type(toml_dir)}`."
+        assert isinstance(toml_dir, str), f'Should be `str`, your type `{type(toml_dir)}`.'
         toml_dir = os.path.expanduser(toml_dir)
 
         self._cvt_array_list()
         self._not_exist_makedirs(toml_dir)
-        with open(toml_dir, "wb") as f:
+        with open(toml_dir, 'wb') as f:
             tomli_w.dump(self, f)
 
     def _not_exist_makedirs(self, dirname: str) -> None:

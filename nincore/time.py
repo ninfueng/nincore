@@ -12,12 +12,12 @@ def second_to_ddhhmmss(second: Union[int, float]) -> str:
         run_time: a converted time in dd:hh:mm:ss format.
     """
     days = int(second // (60 * 60 * 24))
-    run_time = time.strftime("%H:%M:%S", time.gmtime(second))
-    run_time = f"{days:02d}:" + run_time
+    run_time = time.strftime('%H:%M:%S', time.gmtime(second))
+    run_time = f'{days:02d}:' + run_time
     return run_time
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     t0 = time.perf_counter()
     time.sleep(1)
     t1 = time.perf_counter()

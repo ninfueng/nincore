@@ -9,13 +9,13 @@ from typing import Sequence, Union
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["filter_warn", "set_logger", "backup_scripts", "apply_rich", "AvgMeter"]
+__all__ = ['filter_warn', 'set_logger', 'backup_scripts', 'apply_rich', 'AvgMeter']
 
 
 # https://docs.python.org/3/library/warnings.html
 def filter_warn() -> None:
     if not sys.warnoptions:
-        warnings.simplefilter("ignore")
+        warnings.simplefilter('ignore')
 
 
 def apply_rich() -> None:
@@ -26,7 +26,7 @@ def apply_rich() -> None:
         traceback.install()
 
     except ImportError:
-        raise ImportError("This `apply_rich` function requires the `rich` package.")
+        raise ImportError('This `apply_rich` function requires the `rich` package.')
 
 
 def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:
@@ -34,13 +34,13 @@ def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:
     os.makedirs(dest, exist_ok=True)
     scripts = []
     if isinstance(filetype, str):
-        scripts += glob.glob(os.path.join(os.curdir, f"*{filetype}"))
+        scripts += glob.glob(os.path.join(os.curdir, f'*{filetype}'))
     elif isinstance(filetype, Sequence):
         # This `Sequence` can be used for the tuple and list.
         for f in filetype:
-            scripts += glob.glob(os.path.join(os.curdir, f"*{f}"))
+            scripts += glob.glob(os.path.join(os.curdir, f'*{f}'))
     else:
-        raise NotImplementedError(f"Not support filetype: {filetype}.")
+        raise NotImplementedError(f'Not support filetype: {filetype}.')
 
     for s in scripts:
         file_name = os.path.basename(s)
@@ -86,8 +86,8 @@ def set_logger(
         verbose: (bool) if True, verbose some information
 
     Example:
-    >>> set_logger("info.log")
-    >>> logger.info("Starting training...")
+    >>> set_logger('info.log')
+    >>> logger.info('Starting training...')
     """
     assert isinstance(stdout, bool)
     assert level in [0, 10, 20, 30, 40, 50]
@@ -108,27 +108,27 @@ def set_logger(
 
     if not logger.handlers:
         file_handler = logging.FileHandler(log_dir)
-        file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(filename)s: %(message)s"))
+        file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s'))
         logger.addHandler(file_handler)
 
         if stdout:
             stream_handler = logging.StreamHandler()
-            stream_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(filename)s: %(message)s"))
+            stream_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s'))
             logger.addHandler(stream_handler)
 
     if with_color:
         # https://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
         if sys.stderr.isatty():
-            logging.addLevelName(logging.INFO, f"\033[1;32m{logging.getLevelName(logging.INFO)}\033[1;0m")
+            logging.addLevelName(logging.INFO, f'\033[1;32m{logging.getLevelName(logging.INFO)}\033[1;0m')
             logging.addLevelName(
                 logging.WARNING,
-                f"\033[1;33m{logging.getLevelName(logging.WARNING)}\033[1;0m",
+                f'\033[1;33m{logging.getLevelName(logging.WARNING)}\033[1;0m',
             )
             logging.addLevelName(
                 logging.ERROR,
-                f"\033[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m",
+                f'\033[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m',
             )
             logging.addLevelName(
                 logging.CRITICAL,
-                f"\041[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m",
+                f'\041[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m',
             )

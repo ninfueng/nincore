@@ -1,28 +1,28 @@
 from typing import Any
 
 __all__ = [
-    "gstr",
-    "ystr",
-    "rstr",
-    "gprint",
-    "yprint",
-    "rprint",
-    "multi_getattr",
-    "multi_setattr",
+    'gstr',
+    'ystr',
+    'rstr',
+    'gprint',
+    'yprint',
+    'rprint',
+    'multi_getattr',
+    'multi_setattr',
 ]
 
 
 # https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal
 def gstr(s: str) -> str:
-    return f"\033[32m{s}\033[0m"
+    return f'\033[32m{s}\033[0m'
 
 
 def ystr(s: str) -> str:
-    return f"\033[33m{s}\033[0m"
+    return f'\033[33m{s}\033[0m'
 
 
 def rstr(s: str) -> str:
-    return f"\033[31m{s}\033[0m"
+    return f'\033[31m{s}\033[0m'
 
 
 def gprint(s: str) -> None:
@@ -42,10 +42,10 @@ def multi_getattr(obj: object, multiattr: str) -> Any:
 
     Example:
     >>> model = alexnet()
-    >>> multi_getattr(model, "features.0.weight")
+    >>> multi_getattr(model, 'features.0.weight')
     """
     assert isinstance(multiattr, str)
-    attrs = multiattr.split(".")
+    attrs = multiattr.split('.')
     recur_attr = getattr(obj, attrs[0])
     for attr in attrs[1:]:
         recur_attr = getattr(recur_attr, attr)
@@ -58,11 +58,11 @@ def multi_setattr(obj: object, multiattr: str, value: Any) -> None:
     Example:
     >>> model = alexnet()
     >>> replace_param = nn.Parameter(torch.zeros_like(model.features[0].weight))
-    >>> multi_setattr(model, "features.0.weight", replace_param)
+    >>> multi_setattr(model, 'features.0.weight', replace_param)
     >>> model.features[0].weight
     """
     assert isinstance(multiattr, str)
-    attrs = multiattr.split(".")
+    attrs = multiattr.split('.')
     # Fixes when `multiattr` without `.`.
     if len(attrs) == 1:
         setattr(obj, attrs[0], value)

@@ -4,12 +4,12 @@ import types
 from packaging.version import Version, parse
 
 __all__ = [
-    "parse_module",
-    "is_newer_equal",
-    "is_newer",
-    "is_older_equal",
-    "is_older",
-    "is_equal",
+    'parse_module',
+    'is_newer_equal',
+    'is_newer',
+    'is_older_equal',
+    'is_older',
+    'is_equal',
 ]
 
 
@@ -21,7 +21,7 @@ def parse_module(module: types.ModuleType) -> Version:
     >>> parse_module(torch)
     1.12.1+cu113
     """
-    version = getattr(module, "__version__")
+    version = getattr(module, '__version__')
     version = parse(version)
     return version
 
@@ -31,7 +31,7 @@ def is_newer(module: types.ModuleType, version: str) -> bool:
 
     Example:
     >>> import torch
-    >>> is_newer(torch, "0.0.0")
+    >>> is_newer(torch, '0.0.0')
     True
     """
     module_version = parse_module(module)
@@ -44,7 +44,7 @@ def is_newer_equal(module: types.ModuleType, version: str) -> bool:
 
     Example:
     >>> import torch
-    >>> is_newer_equal(torch, "0.0.0")
+    >>> is_newer_equal(torch, '0.0.0')
     True
     """
     module_version = parse_module(module)
@@ -73,7 +73,7 @@ def is_equal(module: types.ModuleType, version: str) -> bool:
     return module_version == version
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import numpy as np
     import packaging
 

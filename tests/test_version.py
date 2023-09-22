@@ -9,10 +9,10 @@ def test_parse_version() -> None:
 
 class TestVersion:
     def test_version_newer(self) -> None:
-        assert not is_newer(nincore, "9999.99.99")
+        assert not is_newer(nincore, '9999.99.99')
 
     def test_version_older(self) -> None:
-        assert not is_older(nincore, "0.0.0")
+        assert not is_older(nincore, '0.0.0')
 
     def test_version_equal(self) -> None:
         assert is_equal(nincore, nincore.__version__)
