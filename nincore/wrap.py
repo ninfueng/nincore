@@ -1,10 +1,14 @@
+import cProfile
+import os
 import time
+from pstats import SortKey, Stats
 from typing import Any, Callable
 
 __all__ = [
     'wrap_time',
     'wrap_identity',
     'WrapWithIdentity',
+    'wrap_profile',
 ]
 
 
@@ -37,3 +41,28 @@ class WrapWithIdentity:
 
     def __exit__(self, *_: Any, **__: Any) -> None:
         return
+
+
+def wrap_profile(fn: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapped(*args: Any, **kwargs: Any) -> Any:
+        with cProfile.Profile() as p:
+            results = fn(*args, **kwargs)
+
+        stats = Stats(p)
+        stats.sort_stats(SortKey.CUMULATIVE)
+        stats.print_stats()
+
+        profile_file = os.path.expanduser('./profile.pstat')
+        stats.dump_stats(profile_file)
+        return results
+
+    return wrapped
+
+
+if __name__ == '__main__':
+
+    @wrap_profile
+    def test_profile():
+        print('hello world')
+
+    test_profile()
