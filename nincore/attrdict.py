@@ -77,7 +77,7 @@ class AttrDict(OrderedDict):
         s = '{\n'
         for k_, v_ in d.items():
             s += ' ' * indent
-            if self._isinstance_dicts(v_):
+            if isinstance(v_, (AttrDict, OrderedDict, dict)):
                 indent += 2
                 s += self.get_dict_repr(v_, indent)
                 indent -= 2
@@ -92,7 +92,7 @@ class AttrDict(OrderedDict):
         s = 'AttrDict{\n'
         for k, v in self.items():
             s += ' ' * 2
-            if self._isinstance_dicts(v):
+            if isinstance(v, (AttrDict, OrderedDict, dict)):
                 indent += 2
                 s += self.get_dict_repr(v, indent)
                 indent -= 2
@@ -115,9 +115,6 @@ class AttrDict(OrderedDict):
                 if isinstance(value, torch.Tensor):
                     tmp = value.detach().cpu().numpy()
                     self[key] = tmp.tolist()
-
-    def _isinstance_dicts(self, x: Any) -> bool:
-        return isinstance(x, (AttrDict, OrderedDict, dict))
 
 
 if __name__ == '__main__':

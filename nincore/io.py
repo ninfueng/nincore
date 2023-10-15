@@ -18,20 +18,20 @@ __all__ = [
 
 def load_json(json_dir: str) -> Dict[str, Any]:
     """Load a toml file as a `dict`."""
-    assert isinstance(json_dir, str)
+    assert isinstance(json_dir, str), f'`json_dir` is not `str`, Your: {type(json_dir)}'
     json_dir = os.path.expanduser(json_dir)
     with open(json_dir) as f:
         dict_ = json.load(f)
     return dict_
 
 
-def save_json(dict_: Dict[str, Any], json_file: str, indent: int = 4) -> None:
+def save_json(dict_: Dict[str, Any], json_dir: str, indent: int = 4) -> None:
     """Save a `dict` as a json file."""
-    assert isinstance(json_file, str)
-    json_file = os.path.expanduser(json_file)
-    dirname = os.path.dirname(json_file)
+    assert isinstance(json_dir, str), f'`json_dir` is not `str`, Your: {type(json_dir)}'
+    json_dir = os.path.expanduser(json_dir)
+    dirname = os.path.dirname(json_dir)
     os.makedirs(dirname, exist_ok=True)
-    with open(json_file, 'w') as f:
+    with open(json_dir, 'w') as f:
         # Avoid objects which can not be serializable.
         json.dump(dict_, f, indent=indent, default=lambda _: '<not serializable>')
 
@@ -42,7 +42,7 @@ def load_yaml(yaml_dir: str) -> Dict[str, Any]:
     Example:
     >>> load_yaml('./config.yaml')
     """
-    assert isinstance(yaml_dir, str)
+    assert isinstance(yaml_dir, str), f'`yaml_dir` is not `str`, Your: {type(yaml_dir)}'
     yaml_dir = os.path.expanduser(yaml_dir)
     # https://stackoverflow.com/questions/30458977/yaml-loads-5e-6-as-string-and-not-a-number
     loader = yaml.SafeLoader
@@ -67,34 +67,33 @@ def load_yaml(yaml_dir: str) -> Dict[str, Any]:
 
 
 # https://stackabuse.com/reading-and-writing-yaml-to-a-file-in-python/
-def save_yaml(dict_: Dict[str, Any], save_dir: str) -> None:
+def save_yaml(dict_: Dict[str, Any], yaml_dir: str) -> None:
     """Save a `dict` to a yaml file.
 
     Example:
     >>> dict_ = load_yaml('./config.yaml')
     >>> dump_yaml(dict_, './config2.yaml')
     """
-    assert isinstance(save_dir, str)
-    save_dir = os.path.expanduser(save_dir)
-    dirname = os.path.dirname(save_dir)
+    assert isinstance(yaml_dir, str), f'`yaml_dir` is not `str`, Your: {type(yaml_dir)}'
+    yaml_dir = os.path.expanduser(yaml_dir)
+    dirname = os.path.dirname(yaml_dir)
     os.makedirs(dirname, exist_ok=True)
-
-    with open(save_dir, 'w') as f:
+    with open(yaml_dir, 'w') as f:
         yaml.dump(dict_, f)
 
 
-def load_pt(pickle_dir: str) -> Any:
-    assert isinstance(pickle_dir, str)
-    pickle_dir = os.path.expanduser(pickle_dir)
-    with open(pickle_dir, 'rb') as f:
+def load_pt(pt_dir: str) -> Any:
+    assert isinstance(pt_dir, str), f'`pt_dir` is not `str`, Your: {type(pt_dir)}'
+    pt_dir = os.path.expanduser(pt_dir)
+    with open(pt_dir, 'rb') as f:
         return pickle.load(f)
 
 
-def save_pt(obj: Any, save_dir: str) -> None:
+def save_pt(obj: Any, pt_dir: str) -> None:
     """Save a object to pickle file."""
-    assert isinstance(save_dir, str)
-    save_dir = os.path.expanduser(save_dir)
-    with open(save_dir, 'wb') as p:
+    assert isinstance(pt_dir, str), f'`pt_dir` is not `str`, Your: {type(pt_dir)}'
+    pt_dir = os.path.expanduser(pt_dir)
+    with open(pt_dir, 'wb') as p:
         pickle.dump(obj, p, protocol=pickle.HIGHEST_PROTOCOL)
 
 

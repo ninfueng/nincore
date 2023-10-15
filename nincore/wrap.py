@@ -33,16 +33,6 @@ def wrap_identity(fn: Callable[..., Any]) -> Callable[..., Any]:
     return wrapped
 
 
-class WrapWithIdentity:
-    """Using for"""
-
-    def __enter__(self, *_: Any, **__: Any) -> None:
-        return
-
-    def __exit__(self, *_: Any, **__: Any) -> None:
-        return
-
-
 def wrap_profile(fn: Callable[..., Any]) -> Callable[..., Any]:
     def wrapped(*args: Any, **kwargs: Any) -> Any:
         with cProfile.Profile() as p:
@@ -57,6 +47,16 @@ def wrap_profile(fn: Callable[..., Any]) -> Callable[..., Any]:
         return results
 
     return wrapped
+
+
+class WrapWithIdentity:
+    """Using for"""
+
+    def __enter__(self, *_: Any, **__: Any) -> None:
+        return
+
+    def __exit__(self, *_: Any, **__: Any) -> None:
+        return
 
 
 if __name__ == '__main__':
