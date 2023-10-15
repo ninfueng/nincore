@@ -1,38 +1,21 @@
 import json
 import os
 from collections import OrderedDict
-from typing import Any
+from typing import Any, Dict
 
-try:
-    import tomli_w
-except ImportError:
-    pass
-
-try:
-    import yaml
-except ImportError:
-    pass
-
-enable_cvt_np = False
-enable_cvt_torch = False
-try:
-    import numpy as np
-
-    enable_cvt_np = True
-except ImportError:
-    pass
+import numpy as np
+import yaml
 
 try:
     import torch
 
-    enable_cvt_torch = True
+    ENABLE_TORCH = True
+
 except ImportError:
-    pass
+    raise
+
 
 __all__ = ['AttrDict']
-
-
-# TODO: make __repr__ better
 
 
 class AttrDict(OrderedDict):
@@ -59,8 +42,9 @@ class AttrDict(OrderedDict):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         for key in self.keys():
-            if isinstance(self[key], dict):
+            if isinstance(self[key], (OrderedDict, dict)):
                 self[key] = AttrDict(self[key])
+
             elif isinstance(self[key], list):
                 for idx, value in enumerate(self[key]):
                     if isinstance(value, dict):
@@ -89,14 +73,34 @@ class AttrDict(OrderedDict):
         with open(yaml_dir, 'w') as f:
             yaml.dump(self, f)
 
-    def to_toml(self, toml_dir: str) -> None:
-        assert isinstance(toml_dir, str), f'Should be `str`, your type `{type(toml_dir)}`.'
-        toml_dir = os.path.expanduser(toml_dir)
+    def get_dict_repr(self, d: Dict[str, Any], indent: int) -> str:
+        s = '{\n'
+        for k_, v_ in d.items():
+            s += ' ' * indent
+            if self._isinstance_dicts(v_):
+                indent += 2
+                s += self.get_dict_repr(v_, indent)
+                indent -= 2
+            else:
+                s += f'{k_}: {v_},'
+            s += '\n'
+        s += ' ' * (indent - 2) + '},'
+        return s
 
-        self._cvt_array_list()
-        self._not_exist_makedirs(toml_dir)
-        with open(toml_dir, 'wb') as f:
-            tomli_w.dump(self, f)
+    def __repr__(self) -> str:
+        indent = 2
+        s = 'AttrDict{\n'
+        for k, v in self.items():
+            s += ' ' * 2
+            if self._isinstance_dicts(v):
+                indent += 2
+                s += self.get_dict_repr(v, indent)
+                indent -= 2
+            else:
+                s += f'{k}: {v},'
+            s += '\n'
+        s += '}'
+        return s
 
     def _not_exist_makedirs(self, dirname: str) -> None:
         dirname = os.path.dirname(dirname)
@@ -105,10 +109,21 @@ class AttrDict(OrderedDict):
     def _cvt_array_list(self) -> None:
         """Converts `Tensor` and `np.ndarray` to `list` to save-able formats."""
         for key, value in self.items():
-            if enable_cvt_torch:
+            if isinstance(value, np.ndarray):
+                self[key] = value.tolist()
+            if ENABLE_TORCH:
                 if isinstance(value, torch.Tensor):
                     tmp = value.detach().cpu().numpy()
                     self[key] = tmp.tolist()
-            if enable_cvt_np:
-                if isinstance(value, np.ndarray):
-                    self[key] = value.tolist()
+
+    def _isinstance_dicts(self, x: Any) -> bool:
+        return isinstance(x, (AttrDict, OrderedDict, dict))
+
+
+if __name__ == '__main__':
+    a = AttrDict(
+        a=1,
+        b=[1, 2],
+        c=AttrDict({'d': 3, 'e': AttrDict({'f': 4, 'h': {'k': 5, 'x': 6}}), 'g': 5}),
+    )
+    print(a)
