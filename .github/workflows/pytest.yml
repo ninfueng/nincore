@@ -26,7 +26,7 @@ jobs:
 
       - name: pip install dependencies
         run: |
-          pip3 install PyYAML pytest
+          pip3 install PyYAML pytest numpy
           python setup.py install
 
       - name: run pytest
