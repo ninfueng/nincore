@@ -32,10 +32,6 @@ class AttrDict(OrderedDict):
     5
     """
 
-    __slots__ = ()
-    # NOTE: `OrderedDict.__getitem__` causes `mypy` warnings. Using `dict` instead.
-    __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setitem__
     factory_default = None
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -49,10 +45,52 @@ class AttrDict(OrderedDict):
                     if isinstance(value, (dict, OrderedDict, AttrDict)):
                         self[k][idx] = AttrDict(v[idx])
 
+    def __setattr__(self, key: str, value: Any) -> None:
+        self.__setitem__(key, value)
+
+    def __delattr__(self, key: str) -> None:
+        self.__delitem__(key)
+
+    def __getattr__(self, key: str) -> Any:
+        return self.__getitem__(key)
+
     def __missing__(self, key: str) -> None:
         """Default is `None`, what to replace with unseen keys."""
         self[key] = self.factory_default
         return self.factory_default
+
+    def __repr__(self) -> str:
+        indent = 2
+        s = 'AttrDict{\n'
+        for k, v in self.items():
+            s += ' ' * 2
+            if isinstance(v, (dict, OrderedDict, AttrDict)):
+                s += f'{k}: '
+                if len(v) == 0:
+                    s += '{},'
+                else:
+                    indent += 4
+                    s += self._get_dict_repr(v, indent)
+                    indent -= 4
+            else:
+                s += f'{k}: {v},'
+            s += '\n'
+        s += '}'
+        return s
+
+    def _get_dict_repr(self, d: Dict[str, Any], indent: int) -> str:
+        s = '{\n'
+        for k, v in d.items():
+            s += ' ' * indent
+            if isinstance(v, (dict, OrderedDict, AttrDict)):
+                indent += 2
+                s += self._get_dict_repr(v, indent)
+                indent -= 2
+            else:
+                s += f'{k}: {v},'
+            s += '\n'
+        s += ' ' * (indent - 2) + '},'
+        return s
 
     def to_json(self, json_dir: str, indent: int = 4) -> None:
         assert isinstance(json_dir, str), f'Should be `str`, Your `{type(json_dir)}`.'
@@ -72,39 +110,6 @@ class AttrDict(OrderedDict):
         self._if_not_exist_makedirs(yaml_dir)
         with open(yaml_dir, 'w') as f:
             yaml.dump(self, f)
-
-    def get_dict_repr(self, d: Dict[str, Any], indent: int) -> str:
-        s = '{\n'
-        for k, v in d.items():
-            s += ' ' * indent
-            if isinstance(v, (dict, OrderedDict, AttrDict)):
-                indent += 2
-                s += self.get_dict_repr(v, indent)
-                indent -= 2
-            else:
-                s += f'{k}: {v},'
-            s += '\n'
-        s += ' ' * (indent - 2) + '},'
-        return s
-
-    def __repr__(self) -> str:
-        indent = 2
-        s = 'AttrDict{\n'
-        for k, v in self.items():
-            s += ' ' * 2
-            if isinstance(v, (dict, OrderedDict, AttrDict)):
-                s += f'{k}: '
-                if len(v) == 0:
-                    s += '{},'
-                else:
-                    indent += 4
-                    s += self.get_dict_repr(v, indent)
-                    indent -= 4
-            else:
-                s += f'{k}: {v},'
-            s += '\n'
-        s += '}'
-        return s
 
     def _if_not_exist_makedirs(self, dirname: str) -> None:
         dirname = os.path.dirname(dirname)
@@ -140,3 +145,6 @@ if __name__ == '__main__':
         o={'p': np.array([1, 2, 3]), 'q': np.array([[1, 2, 3], [4, 5, 6]])},
     )
     print(a)
+    a.test = 5
+    print(a)
+    print(a.test2)
