@@ -6,6 +6,8 @@ from typing import Any, Dict
 import numpy as np
 import yaml
 
+from nincore.io import save_pt
+
 try:
     import torch
 
@@ -110,6 +112,12 @@ class AttrDict(OrderedDict):
         self._if_not_exist_makedirs(yaml_dir)
         with open(yaml_dir, 'w') as f:
             yaml.dump(self, f)
+
+    def to_pt(self, pt_dir: str) -> None:
+        assert isinstance(pt_dir, str), f'Should be `str`, Your `{type(pt_dir)}`.'
+        pt_dir = os.path.expanduser(pt_dir)
+        self._if_not_exist_makedirs(pt_dir)
+        save_pt(self, pt_dir)
 
     def _if_not_exist_makedirs(self, dirname: str) -> None:
         dirname = os.path.dirname(dirname)
