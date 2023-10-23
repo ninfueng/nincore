@@ -8,15 +8,6 @@ import yaml
 
 from nincore.io import save_pt
 
-try:
-    import torch
-
-    ENABLE_TORCH = True
-
-except ImportError:
-    raise
-
-
 __all__ = ['AttrDict']
 
 
@@ -126,19 +117,16 @@ class AttrDict(OrderedDict):
         os.makedirs(dirname, exist_ok=True)
 
     def _cvt_array_list(self) -> None:
-        """Converts `Tensor` and `np.ndarray` to `list` to save-able formats."""
+        """Converts `np.ndarray` to `list` to save-able for json and yaml files."""
         for k, v in self.items():
-            if isinstance(v, np.ndarray):
-                self[k] = v.tolist()
-            elif isinstance(v, (dict, OrderedDict, AttrDict)):
+            if isinstance(v, (dict, OrderedDict, AttrDict)):
                 if isinstance(v, AttrDict):
                     self[k]._cvt_array_list()
                 else:
                     self[k] = AttrDict(v)
                     self[k]._cvt_array_list()
-            if ENABLE_TORCH:
-                if isinstance(v, torch.Tensor):
-                    self[k] = v.detach().cpu().numpy().tolist()
+            elif isinstance(v, np.ndarray):
+                self[k] = v.tolist()
 
 
 if __name__ == '__main__':
