@@ -16,7 +16,7 @@ fmt:
 	find . -iname *.py | xargs pyupgrade
 	isort . \
 		--skip __init__.py \
-		--line-length 120 \
+		--line-length 88 \
 		--profile black \
 		--multi-line 3 \
 		--trailing-comma \
@@ -25,7 +25,7 @@ fmt:
 		--ensure-newline-before-comments \
 		--filter-files
 	black . \
-		--line-length 120 \
+		--line-length 88 \
 		--exclude ./exps \
 		--target-version py311 \
 		--skip-string-normalization

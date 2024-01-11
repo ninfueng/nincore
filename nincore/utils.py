@@ -108,18 +108,24 @@ def set_logger(
 
     if not logger.handlers:
         file_handler = logging.FileHandler(log_dir)
-        file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s'))
+        file_handler.setFormatter(
+            logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s')
+        )
         logger.addHandler(file_handler)
 
         if stdout:
             stream_handler = logging.StreamHandler()
-            stream_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s'))
+            stream_handler.setFormatter(
+                logging.Formatter('%(asctime)s:%(levelname)s:%(filename)s: %(message)s')
+            )
             logger.addHandler(stream_handler)
 
     if with_color:
         # https://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
         if sys.stderr.isatty():
-            logging.addLevelName(logging.INFO, f'\033[1;32m{logging.getLevelName(logging.INFO)}\033[1;0m')
+            logging.addLevelName(
+                logging.INFO, f'\033[1;32m{logging.getLevelName(logging.INFO)}\033[1;0m'
+            )
             logging.addLevelName(
                 logging.WARNING,
                 f'\033[1;33m{logging.getLevelName(logging.WARNING)}\033[1;0m',
