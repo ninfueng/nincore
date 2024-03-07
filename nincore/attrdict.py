@@ -8,7 +8,7 @@ import yaml
 
 from nincore.io import save_pt
 
-__all__ = ['AttrDict']
+__all__ = ['AttrDict', 'DefAttrDict']
 
 
 class AttrDict(OrderedDict):

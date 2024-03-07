@@ -7,8 +7,8 @@ from typing import Any, Callable
 __all__ = [
     'wrap_time',
     'wrap_identity',
-    'WrapWithIdentity',
     'wrap_profile',
+    'WrapWithIdentity',
 ]
 
 
@@ -20,7 +20,7 @@ def wrap_time(fn: Callable[..., Any]) -> Callable[..., Any]:
         return fn(*args, **kwargs)
 
     diff = time.perf_counter() - t0
-    print(f'Run `{fn=}` for {diff} seconds.')
+    print(f'Run `{fn=}` for {diff:,} seconds.')
     return wrapped
 
 

@@ -24,9 +24,8 @@ def apply_rich() -> None:
 
         pretty.install()
         traceback.install()
-
     except ImportError:
-        raise ImportError('This `apply_rich` function requires the `rich` package.')
+        raise ImportError('`apply_rich` function requires a `rich` package.')
 
 
 def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:

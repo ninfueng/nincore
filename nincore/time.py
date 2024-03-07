@@ -2,7 +2,7 @@ import time
 from typing import Union
 
 
-def second_to_ddhhmmss(second: Union[int, float]) -> str:
+def second_ddhhmmss(second: Union[int, float]) -> str:
     """Convert seconds to days:hours:minute:seconds format.
 
     Arguments:
@@ -26,9 +26,9 @@ if __name__ == '__main__':
 
     # Number of second of a day: 86_400 = 60 * 60 * 24
     seconds = 86_400 * 101
-    time_format = second_to_ddhhmmss(seconds)
+    time_format = second_ddhhmmss(seconds)
     print(time_format)
 
     seconds = 86_400 * 1.5
-    time_format = second_to_ddhhmmss(seconds)
+    time_format = second_ddhhmmss(seconds)
     print(time_format)

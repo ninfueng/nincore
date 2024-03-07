@@ -1,5 +1,5 @@
 """Version related functions."""
-import types
+from types import ModuleType
 
 from packaging.version import Version, parse
 
@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 
-def parse_module(module: types.ModuleType) -> Version:
+def parse_module(module: ModuleType) -> Version:
     """Parse version from given module.
 
     Example:
@@ -26,7 +26,7 @@ def parse_module(module: types.ModuleType) -> Version:
     return version
 
 
-def is_newer(module: types.ModuleType, version: str) -> bool:
+def is_newer(module: ModuleType, version: str) -> bool:
     """Return True if `module.__version__` is newer than `version`.
 
     Example:
@@ -39,7 +39,7 @@ def is_newer(module: types.ModuleType, version: str) -> bool:
     return module_version > version
 
 
-def is_newer_equal(module: types.ModuleType, version: str) -> bool:
+def is_newer_equal(module: ModuleType, version: str) -> bool:
     """Return True if `module.__version__` is newer or equal than `version`.
 
     Example:
@@ -52,21 +52,21 @@ def is_newer_equal(module: types.ModuleType, version: str) -> bool:
     return module_version >= version
 
 
-def is_older(module: types.ModuleType, version: str) -> bool:
+def is_older(module: ModuleType, version: str) -> bool:
     """Return True if `module.__version__` is newer or equal than `version`."""
     module_version = parse_module(module)
     version = parse(version)
     return module_version < version
 
 
-def is_older_equal(module: types.ModuleType, version: str) -> bool:
+def is_older_equal(module: ModuleType, version: str) -> bool:
     """Return True if `module.__version__` is newer than `version`."""
     module_version = parse_module(module)
     version = parse(version)
     return module_version <= version
 
 
-def is_equal(module: types.ModuleType, version: str) -> bool:
+def is_equal(module: ModuleType, version: str) -> bool:
     """Return True if `module.__version__` is newer than `version`."""
     module_version = parse_module(module)
     version = parse(version)
@@ -78,9 +78,7 @@ if __name__ == '__main__':
     import packaging
 
     version = parse_module(np)
-
     print(version)
     packaging.version.parse(np.__version__)
     print(version)
-
     res = version == np.__version__
