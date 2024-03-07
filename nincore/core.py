@@ -44,7 +44,7 @@ def multi_getattr(obj: object, multiattr: str) -> Any:
     >>> model = alexnet()
     >>> multi_getattr(model, 'features.0.weight')
     """
-    assert isinstance(multiattr, str)
+    assert isinstance(multiattr, str), f'`multiattr` should be `str`, Your {type(multiattr)}.'
     attrs = multiattr.split('.')
     recur_attr = getattr(obj, attrs[0])
     for attr in attrs[1:]:
@@ -61,7 +61,7 @@ def multi_setattr(obj: object, multiattr: str, value: Any) -> None:
     >>> multi_setattr(model, 'features.0.weight', replace_param)
     >>> model.features[0].weight
     """
-    assert isinstance(multiattr, str)
+    assert isinstance(multiattr, str), f'`multiattr` should be `str`, Your {type(multiattr)}.'
     attrs = multiattr.split('.')
     # Fixes when `multiattr` without `.`.
     if len(attrs) == 1:

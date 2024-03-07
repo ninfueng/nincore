@@ -9,11 +9,11 @@ from typing import Sequence, Union
 
 logger = logging.getLogger(__name__)
 
-__all__ = ['filter_warn', 'set_logger', 'backup_scripts', 'apply_rich', 'AvgMeter']
+__all__ = ['fil_warn', 'set_logger', 'backup_scripts', 'apply_rich', 'AvgMeter']
 
 
 # https://docs.python.org/3/library/warnings.html
-def filter_warn() -> None:
+def fil_warn() -> None:
     if not sys.warnoptions:
         warnings.simplefilter('ignore')
 
@@ -99,7 +99,6 @@ def set_logger(
 
     if not parent_dir.is_dir():
         parent_dir.mkdir(exist_ok=True)
-
     if rm_exist and parent_dir.is_file():
         log_dir.unlink()
 

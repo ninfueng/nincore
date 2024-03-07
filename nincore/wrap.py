@@ -37,11 +37,9 @@ def wrap_profile(fn: Callable[..., Any]) -> Callable[..., Any]:
     def wrapped(*args: Any, **kwargs: Any) -> Any:
         with cProfile.Profile() as p:
             results = fn(*args, **kwargs)
-
         stats = Stats(p)
         stats.sort_stats(SortKey.CUMULATIVE)
         stats.print_stats()
-
         profile_file = os.path.expanduser('./profile.pstat')
         stats.dump_stats(profile_file)
         return results
