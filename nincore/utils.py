@@ -4,12 +4,20 @@ import os
 import shutil
 import sys
 import warnings
+from functools import reduce
 from pathlib import Path
-from typing import Sequence, Union
+from typing import Sequence
 
 logger = logging.getLogger(__name__)
 
-__all__ = ['fil_warn', 'set_logger', 'backup_scripts', 'apply_rich', 'AvgMeter']
+__all__ = [
+    'fil_warn',
+    'set_logger',
+    'backup_scripts',
+    'apply_rich',
+    'get_cmd',
+    'AvgMeter',
+]
 
 
 # https://docs.python.org/3/library/warnings.html
@@ -28,7 +36,18 @@ def apply_rich() -> None:
         raise ImportError('`apply_rich` function requires a `rich` package.')
 
 
-def backup_scripts(filetype: Union[str, Sequence], dest: str) -> None:
+def get_cmd() -> str:
+    """Get a command line that runs this python script.
+
+    >>> get_cmd()
+    python utils.py
+    """
+    cmd = reduce(lambda x, y: f'{x} {y}', sys.argv)
+    cmd = f'python {cmd}'
+    return cmd
+
+
+def backup_scripts(filetype: str | Sequence, dest: str) -> None:
     """Copy all files with `filetype` to the dest location."""
     os.makedirs(dest, exist_ok=True)
     scripts = []
@@ -67,7 +86,7 @@ class AvgMeter:
 
 
 def set_logger(
-    log_dir: Union[str, Path],
+    log_dir: str | Path,
     level: int = logging.INFO,
     stdout: bool = True,
     rm_exist: bool = True,
@@ -136,3 +155,7 @@ def set_logger(
                 logging.CRITICAL,
                 f'\041[1;31m{logging.getLevelName(logging.ERROR)}\033[1;0m',
             )
+
+
+if __name__ == '__main__':
+    print(get_cmd())

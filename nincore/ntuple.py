@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from itertools import repeat
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 __all__ = [
     'to_ntuple',
@@ -12,8 +12,8 @@ __all__ = [
 
 
 # https://github.com/huggingface/pytorch-image-models/blob/main/timm/layers/helpers.py
-def _ntuple(n: Any) -> Callable[..., Tuple[Any, ...]]:
-    def parse(x: Any) -> Tuple[Any, ...]:
+def _ntuple(n: Any) -> Callable[..., tuple[Any, ...]]:
+    def parse(x: Any) -> tuple[Any, ...]:
         if isinstance(x, Iterable) and not isinstance(x, str):
             return tuple(x)
         return tuple(repeat(x, n))

@@ -1,8 +1,7 @@
 import time
-from typing import Union
 
 
-def second_ddhhmmss(second: Union[int, float]) -> str:
+def second_ddhhmmss(second: int | float) -> str:
     """Convert seconds to days:hours:minute:seconds format.
 
     Arguments:
