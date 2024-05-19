@@ -6,9 +6,9 @@ from typing import Any, Callable
 
 __all__ = [
     'wrap_time',
-    'wrap_identity',
+    'wrap_ident',
     'wrap_profile',
-    'WrapWithIdentity',
+    'WrapIdent',
 ]
 
 
@@ -24,7 +24,7 @@ def wrap_time(fn: Callable[..., Any]) -> Callable[..., Any]:
     return wrapped
 
 
-def wrap_identity(fn: Callable[..., Any]) -> Callable[..., Any]:
+def wrap_ident(fn: Callable[..., Any]) -> Callable[..., Any]:
     """Same as identity wrapper used for a placeholder."""
 
     def wrapped(*args: Any, **kwargs: Any) -> Any:
@@ -47,9 +47,7 @@ def wrap_profile(fn: Callable[..., Any]) -> Callable[..., Any]:
     return wrapped
 
 
-class WrapWithIdentity:
-    """Using for"""
-
+class WrapIdent:
     def __enter__(self, *_: Any, **__: Any) -> None:
         return
 
