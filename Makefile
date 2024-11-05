@@ -27,7 +27,7 @@ fmt:
 	black . \
 		--line-length 88 \
 		--exclude ./exps \
-		--target-version py311 \
+		--target-version py312 \
 		--skip-string-normalization
 
 .PHONY: fmtstr
