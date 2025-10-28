@@ -7,8 +7,8 @@ __all__ = [
     'gprint',
     'yprint',
     'rprint',
-    'multi_getattr',
-    'multi_setattr',
+    'mgetattr',
+    'msetattr',
 ]
 
 
@@ -37,41 +37,40 @@ def rprint(s: str) -> None:
     print(rstr(s))
 
 
-def multi_getattr(obj: object, multiattr: str) -> Any:
-    """Multi-level `getattr` allows for accessing multi-level.
+def mgetattr(o: object, attr: str) -> Any:
+    """Multi-level `getattr` allows to access recursively attribute.
 
     Example:
     >>> model = alexnet()
-    >>> multi_getattr(model, 'features.0.weight')
+    >>> mgetattr(model, 'features.0.weight')
     """
-    assert isinstance(
-        multiattr, str
-    ), f'`multiattr` should be `str`, Your {type(multiattr)}.'
-    attrs = multiattr.split('.')
-    recur_attr = getattr(obj, attrs[0])
+    assert isinstance(attr, str), f'`attr` should be `str`. Your: {type(attr)}.'
+    attrs = attr.split('.')
+
+    rattr = getattr(o, attrs[0])
     for attr in attrs[1:]:
-        recur_attr = getattr(recur_attr, attr)
-    return recur_attr
+        rattr = getattr(rattr, attr)
+    return rattr
 
 
-def multi_setattr(obj: object, multiattr: str, value: Any) -> None:
-    """Multi-level `setattr` allows for accessing multi-level.
+def msetattr(o: object, attr: str, value: Any) -> None:
+    """Multi-level `setattr` allows to modify recursively attribute.
 
     Example:
     >>> model = alexnet()
     >>> replace_param = nn.Parameter(torch.zeros_like(model.features[0].weight))
-    >>> multi_setattr(model, 'features.0.weight', replace_param)
+    >>> mgetattr(model, 'features.0.weight', replace_param)
     >>> model.features[0].weight
     """
-    assert isinstance(
-        multiattr, str
-    ), f'`multiattr` should be `str`, Your {type(multiattr)}.'
-    attrs = multiattr.split('.')
-    # Fixes when `multiattr` without `.`.
+    assert isinstance(attr, str), f'`attr` should be `str`. Your {type(attr)}.'
+    attrs = attr.split('.')
+
+    # a case without `.`.
     if len(attrs) == 1:
-        setattr(obj, attrs[0], value)
-        return
-    recur_attr = getattr(obj, attrs[0])
+        setattr(o, attrs[0], value)
+        return None
+
+    rattr = getattr(o, attrs[0])
     for attr in attrs[1:-1]:
-        recur_attr = getattr(recur_attr, attr)
-    setattr(recur_attr, attrs[-1], value)
+        rattr = getattr(rattr, attr)
+    setattr(rattr, attrs[-1], value)
